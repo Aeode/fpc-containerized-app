@@ -1,3 +1,5 @@
+## DISCLAIMER: THIS TEMPLATE IS 95% WRITTEN WITH CLAUDE AI. REMAINING 5% IS JUST ME AUDITING AND TRYING TO UNDERSTAND THE CODE BECAUSE I HAVE NEVER WROTE ONE WITH PASCAL BEFORE!
+
 # Pascal Project
 
 A Free Pascal project with containerized build system using multi-stage Docker builds for minimal image sizes.
