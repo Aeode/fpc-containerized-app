@@ -84,20 +84,6 @@ code --install-extension wosi.omnipascal
 
 The project uses [jcf-pascal-format](https://github.com/quadroid/jcf-pascal-format) for code formatting. This is optional but recommended.
 
-**Installation:**
-
-```bash
-# Clone and build the formatter
-cd ~/Dev/Projects
-git clone https://github.com/quadroid/jcf-pascal-format.git
-cd jcf-pascal-format
-
-# Build (requires FPC)
-make
-
-# The binary will be at ./pascal_format
-```
-
 **VS Code Configuration:**
 
 Add to your `.vscode/settings.json` or user settings:
