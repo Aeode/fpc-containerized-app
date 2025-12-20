@@ -1,0 +1,52 @@
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Build artifacts
+build/
+*.o
+*.ppu
+*.a
+*.compiled
+*.or
+*.res
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation and project files (not needed in container)
+README.md
+*.md
+docs/
+LICENSE
+.editorconfig
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Container files (don't need these inside the image)
+Dockerfile
+Containerfile
+.dockerignore
+docker-compose.yml
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Logs
+*.log
+
+# Test files (unless you need them)
+test/
+tests/
+*.test

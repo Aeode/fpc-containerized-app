@@ -1,0 +1,43 @@
+# Build output
+build/
+bin/
+lib/
+
+# Free Pascal compiler output
+*.o
+*.ppu
+*.a
+*.compiled
+*.or
+*.res
+*.rst
+*.rsj
+
+# Backup files
+*.bak
+*.backup
+*.old
+*~
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+
+# OS specific
+Thumbs.db
+Desktop.ini
+
+# Lazarus IDE specific (if you use Lazarus)
+backup/
+*.lps
+*.lpi.bak
+
+# Compiled executables (optional - remove if you want to commit them)
+# main
+# *.exe
