@@ -119,14 +119,6 @@ src/
 
 All `.pas` files will be found automatically.
 
-## Static Linking
-
-Release builds use static linking (`-XS -Xt` flags) to create self-contained binaries that:
-- Work on any Linux system (same architecture)
-- Have no external dependencies
-- Are perfect for containers and distribution
-- Can use `FROM scratch` base image for minimal container size
-
 ## Development Workflow
 
 1. Edit your Pascal source files in `src/`

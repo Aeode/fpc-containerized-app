@@ -7,8 +7,8 @@ UNIT_PATHS = $(foreach dir,$(UNIT_DIRS), -Fu$(dir))
 DEBUG_OUT = build/debug/main
 RELEASE_OUT = build/release/main
 
-DEBUG_FLAGS = -g -gl -O- -Mobjfpc
-RELEASE_FLAGS = -O2 -Xs -XX -Mobjfpc -XS -Xt
+DEBUG_FLAGS = -Mobjfpc -g -gl -O-
+RELEASE_FLAGS = -Mobjfpc -O2 -XX -Xs
 
 debug:
 	mkdir -p build/debug

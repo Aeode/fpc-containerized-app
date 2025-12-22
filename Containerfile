@@ -1,17 +1,25 @@
-FROM fedora:latest AS builder
+FROM debian:bookworm-slim AS builder
 
-RUN dnf install -y fpc make && \
-    dnf clean all
+RUN apt-get update && apt-get install -y \
+    fpc \
+    make \
+    binutils \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /build
-
 COPY src/ ./src/
 COPY Makefile ./
 
 RUN make release
 
-FROM scratch
+FROM debian:bookworm-slim
 
-COPY --from=builder /build/build/release/main /main
+# Install libc and pthreads (standard in slim)
+RUN apt-get update && apt-get install -y libc6 && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["/main"]
+WORKDIR /app
+COPY --from=builder /build/build/release/main .
+
+EXPOSE 8080
+
+ENTRYPOINT ["./main"]
