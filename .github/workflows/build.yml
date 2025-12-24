@@ -32,13 +32,13 @@ jobs:
           sudo apt-get install -y fp-compiler make
 
       - name: Install FPC (Windows)
-        if: matrix-os == 'windows-latest'
+        if: matrix.os == 'windows-latest'
         uses: crazy-max/ghaction-chocolatey@v3
         with:
           args: install fpc make
 
       - name: Install FPC (macOS)
-        if: matrix-os == 'macos-latest'
+        if: matrix.os == 'macos-latest'
         run: |
           brew update
           brew install fpc make
