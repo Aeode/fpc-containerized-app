@@ -1,7 +1,7 @@
-program Main;
+program main;
 
-uses 
-  SysUtils, Greeter, Calculator;
+uses
+  cthreads, sysutils, greeter, calculator, worker;
 
 procedure ShowMessage;
 var
@@ -34,7 +34,26 @@ begin
   end;
 end;
 
+procedure DemoThreads;
+var
+  Thread1, Thread2, Thread3: TWorkerThread;
+begin
+  WriteLn;
+  WriteLn('Starting threads...');
+
+  Thread1 := TWorkerThread.Create('Thread-1', 5);
+  Thread2 := TWorkerThread.Create('Thread-2', 5);
+  Thread3 := TWorkerThread.Create('Thread-3', 5);
+
+  WriteLn('Main thread waiting...');
+
+  Sleep(3000);
+
+  WriteLn('All threads completed!');
+end;
+
 begin
   ShowMessage;
   CalculateSum;
+  DemoThreads;
 end.

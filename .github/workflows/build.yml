@@ -1,0 +1,60 @@
+name: Build FPC CLI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: linux
+          - os: windows-latest
+            artifact: windows
+          - os: macos-latest
+            artifact: macos
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install FPC (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fp-compiler make
+
+      - name: Install FPC (Windows)
+        if: matrix-os == 'windows-latest'
+        uses: crazy-max/ghaction-chocolatey@v3
+        with:
+          args: install fpc make
+
+      - name: Install FPC (macOS)
+        if: matrix-os == 'macos-latest'
+        run: |
+          brew update
+          brew install fpc make
+
+      - name: Build release
+        run: make release
+        shell: bash
+
+      - name: Verify binary exists
+        run: |
+          ls -lah build/bin
+        shell: bash
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: fpc-cli-${{ matrix.artifact }}
+          path: |
+            build/bin/main*
