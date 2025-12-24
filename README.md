@@ -9,14 +9,16 @@ A Free Pascal project with containerized build system using multi-stage Docker b
 ```
 .
 ├── src/
-│   ├── main.pas           # Main program entry point
+│   ├── main.pp            # Main program entry point
+│   ├── extrautils         # Main program entry point
+│   │   └── calculator.pp  # Calculator unit
 │   └── utils/
-│       └── greeter.pas    # Greeter unit
+│       └── greeter.pp     # Greeter unit
 ├── build/                 # Build output (gitignored)
-│   ├── debug/
-│   └── release/
-├── Makefile              # Build configuration
-├── Containerfile         # Multi-stage container build
+│   ├── bin/               # Executable output
+│   └── lib/               # Unit output
+├── Makefile               # Build configuration
+├── Containerfile          # Multi-stage container build
 ├── .gitignore
 ├── .gitattributes
 └── .dockerignore
@@ -25,11 +27,13 @@ A Free Pascal project with containerized build system using multi-stage Docker b
 ## Prerequisites
 
 ### For Local Development
+
 - Free Pascal Compiler (FPC) 3.2.2+
 - Make
 - VS Code (optional, for IDE support)
 
 ### For Container Builds
+
 - Podman or Docker
 
 ## Building
@@ -39,36 +43,25 @@ A Free Pascal project with containerized build system using multi-stage Docker b
 ```bash
 # Debug build (with symbols)
 make debug
-./build/debug/main
 
 # Release build (optimized, statically linked)
 make release
-./build/release/main
 
 # Clean build artifacts
 make clean
+
+# Run debug build
+make run
 ```
 
 ### Container Build
 
-The Containerfile uses a multi-stage build to produce a minimal image (~1-5 MB) with a statically-linked binary.
-
 ```bash
 # Build the container image
-podman build -t myapp:latest .
+podman build -t myapp:latest
 
 # Run the container
 podman run --rm myapp:latest
-```
-
-**From within Distrobox (Bazzite/immutable systems):**
-
-```bash
-# Build using host's Podman
-distrobox-host-exec podman build -t myapp:latest .
-
-# Run the container
-distrobox-host-exec podman run --rm myapp:latest
 ```
 
 ## VS Code Setup
@@ -92,10 +85,10 @@ Add to your `.vscode/settings.json` or user settings:
 
 ```json
 {
-    "omnipascal.defaultDevelopmentEnvironment": "FreePascal",
-    "omnipascal.freePascalSourcePath": "/usr/share/fpcsrc",
-    "pascal.formatter.engine": "jcf-quadroid",
-    "pascal.formatter.enginePath": "/path/to/jcf-pascal-format/pascal_format"
+  "omnipascal.defaultDevelopmentEnvironment": "FreePascal",
+  "omnipascal.freePascalSourcePath": "/usr/share/fpcsrc",
+  "pascal.formatter.engine": "jcf-quadroid",
+  "pascal.formatter.enginePath": "/path/to/jcf-pascal-format/pascal_format"
 }
 ```
 
@@ -107,14 +100,16 @@ The Makefile automatically discovers all subdirectories under `src/` for unit pa
 
 ```
 src/
-├── main.pas
+├── main.pp
+├── extrautils/
+│   └── calculator.pp
 ├── utils/
-│   └── greeter.pas
+│   └── greeter.pp
 ├── models/
-│   └── user.pas
+│   └── user.pp
 └── controllers/
     └── api/
-        └── handlers.pas
+        └── handlers.pp
 ```
 
 All `.pas` files will be found automatically.
@@ -122,7 +117,6 @@ All `.pas` files will be found automatically.
 ## Development Workflow
 
 1. Edit your Pascal source files in `src/`
-2. Build and test locally: `make debug && ./build/debug/main`
-3. Build optimized binary: `make release`
-4. Build container: `podman build -t myapp .`
-5. Deploy container or distribute the static binary
+2. Build and test locally: `make debug && ./build/bin/main`
+3. Build app with either local binary (`make release`) or containerized (`podman build -t myapp .`)
+4. Deploy the container or distribute the static binary in `build/bin`

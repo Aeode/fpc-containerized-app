@@ -1,24 +1,55 @@
+# Project settings
+PROJECT = main
+SRC_DIR = src
+BUILD_DIR = build
+BIN_DIR = $(BUILD_DIR)/bin
+LIB_DIR = $(BUILD_DIR)/lib
+
+# Compiler settings
 FPC = fpc
-SRC = src/main.pas
+FPC_FLAGS = -Mobjfpc -Fu"$(SRC_DIR)/*" -FE"$(BIN_DIR)" -FU"$(LIB_DIR)"
+DEBUG_FLAGS = -g -gl -O- -dDEBUG
+RELEASE_FLAGS = -O2 -Xs -dRelease
 
-UNIT_DIRS = $(shell find src -type d)
-UNIT_PATHS = $(foreach dir,$(UNIT_DIRS), -Fu$(dir))
+# Source files
+MAIN_SRC = $(SRC_DIR)/main.pp
 
-DEBUG_OUT = build/debug/main
-RELEASE_OUT = build/release/main
+# Targets
+.PHONY: all debug release clean help
 
-DEBUG_FLAGS = -Mobjfpc -g -gl -O-
-RELEASE_FLAGS = -Mobjfpc -O2 -XX -Xs
+# Default target
+all: debug
 
+# Debug build
 debug:
-	mkdir -p build/debug
-	$(FPC) $(DEBUG_FLAGS) $(UNIT_PATHS) $(SRC) -o$(DEBUG_OUT)
+	@echo "Building debug..."
+	@mkdir -p $(BIN_DIR) $(LIB_DIR)
+	$(FPC) $(MAIN_SRC) $(FPC_FLAGS) $(DEBUG_FLAGS) -o"$(BIN_DIR)/$(PROJECT)"
+	@echo "Success: $(BIN_DIR)/$(PROJECT)"
 
+# Release build
 release:
-	mkdir -p build/release
-	$(FPC) $(RELEASE_FLAGS) $(UNIT_PATHS) $(SRC) -o$(RELEASE_OUT)
+	@echo "Building release..."
+	@mkdir -p $(BIN_DIR) $(LIB_DIR)
+	$(FPC) $(MAIN_SRC) $(FPC_FLAGS) $(RELEASE_FLAGS) -o"$(BIN_DIR)/$(PROJECT)"
+	@echo "Success: $(BIN_DIR)/$(PROJECT)"
 
+# Clean build artifacts
 clean:
-	rm -rf build
+	@echo "Cleaning..."
+	@rm -rf $(BUILD_DIR)
 
-.PHONY: debug release clean
+# Run the program
+run: debug
+	@./$(BIN_DIR)/$(PROJECT)
+
+# Help
+help:
+	@echo "Usage: make [target]"
+	@echo ""
+	@echo "Targets:"
+	@echo "  debug      Build debug version (default)"
+	@echo "  release    Build release version"
+	@echo "  clean      Remove build artifacts"
+	@echo "  run        Build and run debug version"
+	@echo "  help       Show this help"
