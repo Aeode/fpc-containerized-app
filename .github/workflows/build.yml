@@ -38,7 +38,7 @@ jobs:
           msystem: MINGW64
           update: true
           install: >
-            mingw-w64-x86_64-fpc
+            mingw-w64-x86_64-freepascal
             mingw-w64-x86_64-make
 
       - name: Install FPC (macOS)
