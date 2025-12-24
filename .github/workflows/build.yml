@@ -1,72 +1,47 @@
-name: Build FPC CLI
+name: Multi-Platform Build
 
 on:
   push:
-    branches: [main]
-  pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
-    name: Build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            artifact: linux
-          - os: windows-latest
-            artifact: windows
-          - os: macos-latest
-            artifact: macos
-
+  build-windows:
+    runs-on: windows-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install FPC (Linux)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Install Lazarus via WinGet
         run: |
-          sudo apt-get update
-          sudo apt-get install -y fp-compiler make
+          winget install --id Lazarus.Lazarus --silent --accept-source-agreements --accept-package-agreements
 
-      - name: Install FPC (Windows)
-        if: matrix.os == 'windows-latest'
-        shell: cmd
+      - name: Locate FPC and Make
+        shell: pwsh
         run: |
-          curl -L -o fpc-installer.exe "https://downloads.sourceforge.net/project/freepascal/Win32/3.2.2/fpc-3.2.2.win32.and.win64.exe"
-          fpc-installer.exe /S /D=C:\FPC
-          setx PATH "C:\FPC\bin\x86_64-win64;%PATH%"
+          # 1. Find the root lazarus folder (default is C:\lazarus)
+          $lazPath = Get-ChildItem -Path C:\ -Filter "lazarus" -Directory -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
 
-      - name: Install Make (Windows)
-        if: matrix.os == 'windows-latest'
-        run: choco install make -y
-        
-      - name: Install FPC (macOS)
-        if: matrix.os == 'macos-latest'
+          if (-not $lazPath) { $lazPath = "C:\lazarus" }
+
+          # 2. Find the bin folder containing fpc.exe and make.exe
+          $fpcBin = Get-ChildItem -Path $lazPath -Filter "fpc.exe" -Recurse | Select-Object -First 1 -ExpandProperty DirectoryName
+          $makeBin = Get-ChildItem -Path $lazPath -Filter "make.exe" -Recurse | Select-Object -First 1 -ExpandProperty DirectoryName
+
+          Write-Host "Found FPC at: $fpcBin"
+          Write-Host "Found Make at: $makeBin"
+
+          # 3. Add to GitHub Path
+          echo "$fpcBin" >> $env:GIBHUB_PATH
+          echo "$makeBin" >> $env:GITHUB_PATH
+
+      - name: Build with CMake
+        shell: pwsh
         run: |
-          brew update
-          brew install fpc make
+          cmake -G "MinGW Makefiles" -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
 
-      - name: Build release (Unix)
-        if: matrix.os != 'windows-latest'
-        run: make release
-        shell: bash
-
-      - name: Build release (Windows)
-        if: matrix.os == 'windows-latest'
-        run: make release
-        shell: cmd
-
-      - name: Verify binary exists
-        run: |
-          ls -lah build/bin
-        shell: bash
-
-      - name: Upload binary
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fpc-cli-${{ matrix.artifact }}
-          path: |
-            build/bin/main*
+          name: app-windows
+          path: build/bin/main.exe

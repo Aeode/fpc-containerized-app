@@ -3,7 +3,7 @@ unit Greeter;
 interface
 
 uses 
-  SysUtils;
+  sysutils;
 
 type
   TGreeter = class

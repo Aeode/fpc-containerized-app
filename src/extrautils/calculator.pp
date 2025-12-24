@@ -3,7 +3,7 @@ unit Calculator;
 interface
 
 uses
-  SysUtils;
+  sysutils;
 
 type
   TCalculator = class
