@@ -33,15 +33,11 @@ jobs:
 
       - name: Install FPC (Windows)
         if: matrix.os == 'windows-latest'
+        shell: cmd
         run: |
-          # Download the official FPC installer
           curl -L -o fpc-installer.exe "https://downloads.sourceforge.net/project/freepascal/Win32/3.2.2/fpc-3.2.2.win32.and.win64.exe"
-          
-          # Install silently into C:\FPC
-          start /wait fpc-installer.exe /S /D=C:\FPC
-          
-          # Add FPC bin folder to PATH
-          echo "C:\FPC\bin\x86_64-win64" >> $Env:GITHUB_PATH
+          fpc-installer.exe /S /D=C:\FPC
+          setx PATH "C:\FPC\bin\x86_64-win64;%PATH%"
 
       - name: Install Make (Windows)
         if: matrix.os == 'windows-latest'
