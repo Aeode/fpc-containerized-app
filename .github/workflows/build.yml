@@ -31,11 +31,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y fp-compiler make
 
-      - name: Install FPC (Windows)
+      - name: Setup MSYS2 (Windows)
         if: matrix.os == 'windows-latest'
-        uses: crazy-max/ghaction-chocolatey@v3
+        uses: msys2/setup-msys2@v2
         with:
-          args: install fpc make
+          msystem: MINGW64
+          update: true
+          install: >
+            mingw-w64-x86_64-fpc
+            mingw-w64-x86_64-make
 
       - name: Install FPC (macOS)
         if: matrix.os == 'macos-latest'
@@ -43,9 +47,15 @@ jobs:
           brew update
           brew install fpc make
 
-      - name: Build release
+      - name: Build release (Unix)
+        if: matrix.os != 'windows-latest'
         run: make release
         shell: bash
+
+      - name: Build release (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: msys2 {0}
+        run: make release
 
       - name: Verify binary exists
         run: |
