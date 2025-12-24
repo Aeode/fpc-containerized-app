@@ -18,6 +18,8 @@ A Free Pascal project with containerized build system using multi-stage Docker b
 │   ├── bin/               # Executable output
 │   └── lib/               # Unit output
 ├── Makefile               # Build configuration
+├── fpc-debug.cfg          # FPC debug configuration
+├── fpc-release.cfg        # FPC release configuration
 ├── Containerfile          # Multi-stage container build
 ├── .gitignore
 ├── .gitattributes

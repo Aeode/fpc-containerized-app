@@ -5,14 +5,13 @@ BUILD_DIR = build
 BIN_DIR = $(BUILD_DIR)/bin
 LIB_DIR = $(BUILD_DIR)/lib
 
-# Compiler settings
+# Compiler
 FPC = fpc
-FPC_FLAGS = -Mobjfpc -Fu"$(SRC_DIR)/*" -FE"$(BIN_DIR)" -FU"$(LIB_DIR)"
-DEBUG_FLAGS = -g -gl -O- -dDEBUG
-RELEASE_FLAGS = -O2 -Xs -dRelease
+MAIN_SRC = "$(SRC_DIR)/main.pp"
 
-# Source files
-MAIN_SRC = $(SRC_DIR)/main.pp
+# Config files
+DEBUG_CFG = fpc-debug.cfg
+RELEASE_CFG = fpc-release.cfg
 
 # Targets
 .PHONY: all debug release clean help
@@ -24,14 +23,14 @@ all: debug
 debug:
 	@echo "Building debug..."
 	@mkdir -p $(BIN_DIR) $(LIB_DIR)
-	$(FPC) $(MAIN_SRC) $(FPC_FLAGS) $(DEBUG_FLAGS) -o"$(BIN_DIR)/$(PROJECT)"
+	$(FPC) @$(DEBUG_CFG) $(MAIN_SRC) -o"$(BIN_DIR)/$(PROJECT)"
 	@echo "Success: $(BIN_DIR)/$(PROJECT)"
 
 # Release build
 release:
 	@echo "Building release..."
 	@mkdir -p $(BIN_DIR) $(LIB_DIR)
-	$(FPC) $(MAIN_SRC) $(FPC_FLAGS) $(RELEASE_FLAGS) -o"$(BIN_DIR)/$(PROJECT)"
+	$(FPC) @$(RELEASE_CFG) $(MAIN_SRC) -o"$(BIN_DIR)/$(PROJECT)"
 	@echo "Success: $(BIN_DIR)/$(PROJECT)"
 
 # Clean build artifacts

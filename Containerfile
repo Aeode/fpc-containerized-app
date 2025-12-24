@@ -1,15 +1,22 @@
-FROM fedora:43 AS build
+FROM debian:12 AS build
 WORKDIR /project
 
 COPY ./Makefile ./
-COPY ./src/ ./src/
+COPY ./fpc-release.cfg ./
 
-RUN dnf install -y fpc make
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        fp-compiler \
+        make \
+        libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY ./src/ ./src/
 RUN make release
 
-FROM scratch
+FROM gcr.io/distroless/cc-debian12
 WORKDIR /app
 
-COPY --from=build /project/build/bin/ ./
+COPY --from=build /project/build/bin/main ./
 
 ENTRYPOINT [ "/app/main" ]
