@@ -1,7 +1,13 @@
 program main;
 
 uses
-  cthreads, sysutils, greeter, calculator, worker;
+{$IFDEF UNIX}
+  cthreads,
+{$ENDIF}
+  sysutils, 
+  greeter, 
+  calculator, 
+  worker;
 
 procedure ShowMessage;
 var

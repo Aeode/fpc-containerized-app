@@ -3,7 +3,8 @@ unit worker;
 interface
 
 uses
-  classes, sysutils;
+  classes, 
+  sysutils;
 
 type
   TWorkerThread = class(TThread)
